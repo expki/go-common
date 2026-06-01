@@ -64,12 +64,11 @@ func WithFs(filesystem afero.Fs) Option {
 }
 
 func resolve(defaultFs func() afero.Fs, opts []Option) options {
-	var o options
+	o := options{
+		fs: defaultFs(),
+	}
 	for _, opt := range opts {
 		opt(&o)
-	}
-	if o.fs == nil {
-		o.fs = defaultFs()
 	}
 	return o
 }
