@@ -1,0 +1,78 @@
+# OpenSSL config used to generate the openssl_cert.* and openssl_csr.* fixtures.
+# It exercises every X.509v3 extension OpenSSL can emit natively that this
+# package also models, so the round-trip test cross-checks us against an
+# independent implementation. Regenerate with gen_openssl_fixtures.sh.
+
+[req]
+distinguished_name = dn
+prompt             = no
+x509_extensions    = v3_ca
+req_extensions     = v3_req
+
+[dn]
+C  = US
+ST = California
+O  = Example Org
+OU = Engineering
+CN = comprehensive.example.com
+
+# ---- self-signed certificate extensions ------------------------------------
+[v3_ca]
+basicConstraints       = critical, CA:TRUE, pathlen:2
+keyUsage               = critical, digitalSignature, keyCertSign, cRLSign
+extendedKeyUsage       = serverAuth, clientAuth, codeSigning, emailProtection, OCSPSigning, 1.3.6.1.5.5.7.3.99
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always, issuer:always
+subjectAltName         = @san
+issuerAltName          = @ian
+nameConstraints        = critical, permitted;DNS:.example.com, permitted;IP:10.0.0.0/255.0.0.0, excluded;email:.evil.example
+certificatePolicies    = critical, @polsect, 1.3.6.1.4.1.99999.2
+policyConstraints      = requireExplicitPolicy:3, inhibitPolicyMapping:1
+inhibitAnyPolicy       = 2
+crlDistributionPoints  = URI:http://crl.example.com/ca.crl, URI:http://crl2.example.com/ca.crl
+freshestCRL            = URI:http://crl.example.com/delta.crl
+authorityInfoAccess    = OCSP;URI:http://ocsp.example.com, caIssuers;URI:http://ca.example.com/ca.crt
+
+[san]
+DNS.1      = comprehensive.example.com
+DNS.2      = www.example.com
+IP.1       = 192.0.2.10
+IP.2       = 2001:db8::1
+email.1    = admin@example.com
+URI.1      = https://example.com/info
+RID.1      = 1.3.6.1.4.1.99999.7
+otherName.1 = 1.3.6.1.4.1.311.20.2.3;UTF8:user@example.com
+dirName.1  = dirsect
+
+[dirsect]
+CN = SAN Directory Name
+O  = Example
+
+[ian]
+URI.1   = https://issuer.example.com
+email.1 = issuer@example.com
+
+[polsect]
+policyIdentifier = 1.3.6.1.4.1.99999.1
+CPS.1            = https://cps.example.com
+userNotice.1     = @notice
+
+[notice]
+explicitText  = "This is a test certificate policy"
+organization  = Example Org
+noticeNumbers = 1, 2, 3
+
+# ---- CSR requested extensions ----------------------------------------------
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage         = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth
+subjectAltName   = @san_req
+
+[san_req]
+DNS.1       = csr.example.com
+DNS.2       = alt.example.com
+email.1     = csr@example.com
+IP.1        = 203.0.113.7
+URI.1       = https://csr.example.com
+otherName.1 = 1.3.6.1.4.1.311.20.2.3;UTF8:csruser@example.com

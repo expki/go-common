@@ -28,6 +28,7 @@ Where a target needs a different implementation (the browser has no real filesys
 | --- | --- |
 | [`fs`](./fs/README.md) | Process-wide persistent and in-memory filesystems backed by the OS, WASI, or IndexedDB depending on platform. |
 | [`search`](./search/README.md) | Open-or-create bleve full-text indexes backed by the `fs` filesystems, so search works on every platform including the browser. |
+| [`x509`](./x509/README.md) | Full X.509 certificate/CSR extension and SAN encode/decode — all nine Subject Alternative Name types and every RFC 5280 extension, byte-exact, wrapping `crypto/x509`. |
 
 ## License
 
