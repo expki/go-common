@@ -27,6 +27,7 @@ Where a target needs a different implementation (the browser has no real filesys
 | Package | Description |
 | --- | --- |
 | [`fs`](./fs/README.md) | Process-wide persistent and in-memory filesystems backed by the OS, WASI, or IndexedDB depending on platform. |
+| [`search`](./search/README.md) | Open-or-create bleve full-text indexes backed by the `fs` filesystems, so search works on every platform including the browser. |
 
 ## License
 
